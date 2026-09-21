@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fast Group Engineering | Yêu cầu báo giá</title>
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Fast Group Engineering – Yêu cầu báo giá">
+<meta name="theme-color" content="#0B2E59">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--brand:#0B2E59;--accent:#F28C28;--bg:#EEF1F5;--ink:#1B2430;--muted:#7A8594;--line:#D8DEE6;
+        --ok:#12805C;--ok-bg:#E4F5EE;--err:#C0352B;--focus:#2F6FEB;--h:36px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:28px 16px}
+  .card{max-width:1040px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(11,46,89,.10);overflow:hidden}
+  .head{background:var(--brand);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:12px}
+  .mark{width:32px;height:32px;border-radius:8px;background:var(--accent);color:var(--brand);font-weight:700;font-size:13px;display:grid;place-items:center;flex:none}
+  .head h1{font-size:17px;margin:0;font-weight:700;line-height:1.2}
+  .head small{display:block;opacity:.7;font-size:12px}
+  .head .time{margin-left:auto;font-size:12px;opacity:.75;white-space:nowrap}
+  form{padding:16px 20px 18px}
+  fieldset{border:0;margin:0;padding:0;min-width:0}
+  fieldset:disabled{opacity:.55}
+  input,select{width:100%;height:var(--h);font:inherit;font-size:14px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:7px;padding:0 10px;outline:none}
+  input::placeholder{color:#A3ACB8}
+  select{padding:0 4px 0 8px}
+  select:invalid{color:#A3ACB8}
+  input:focus,select:focus{border-color:var(--focus);box-shadow:0 0 0 3px rgba(47,111,235,.14)}
+  .contact{display:grid;grid-template-columns:1.1fr .8fr 1.3fr .9fr;gap:8px}
+  .co{font-size:12.5px;color:var(--muted);margin:6px 0 0;min-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .co b{color:var(--ok);font-weight:600}
+  .co input{height:32px;margin-top:2px;max-width:520px}
+  .sec{display:flex;align-items:baseline;gap:8px;margin:14px 0 6px;font-size:12.5px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.4px}
+  .sec span{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)}
+  .row{display:grid;grid-template-columns:22px 150px 1.1fr 1.9fr 64px 118px 22px;gap:6px;align-items:center}
+  .row.th{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:3px}
+  .items .row{margin-bottom:5px}
+  .no{font-size:12px;color:var(--muted);text-align:center}
+  .qty{text-align:center;padding:0 4px}
+  .pics{display:flex;gap:4px;align-items:center}
+  .pic{width:var(--h);height:var(--h);border-radius:6px;overflow:hidden;position:relative;flex:none;border:1px solid var(--line)}
+  .pic img{width:100%;height:100%;object-fit:cover;display:block}
+  .pic button{position:absolute;inset:0;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:15px;opacity:0;cursor:pointer;padding:0}
+  .pic:hover button,.pic button:focus{opacity:1}
+  .cam{width:var(--h);height:var(--h);border:1px dashed #B9C3D0;border-radius:6px;display:grid;place-items:center;cursor:pointer;background:#FAFBFD;flex:none;color:var(--brand)}
+  .cam:hover{border-color:var(--brand)}
+  .cam svg{width:18px;height:18px}
+  .del{border:0;background:none;color:#B0B8C4;font-size:18px;line-height:1;padding:0;cursor:pointer}
+  .del:hover{color:var(--err)}
+  .extra{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid #EEF1F5;font-size:13px}
+  .extra .lbl{font-weight:600;color:var(--muted)}
+  .chk{display:inline-flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap}
+  .chk input{width:16px;height:16px;margin:0;accent-color:var(--brand)}
+  .extra #docsOther{flex:1;min-width:180px;max-width:320px}
+  .extra #need{width:180px}
+  .grp{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .bar{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .add{border:0;background:none;color:var(--brand);font:inherit;font-weight:600;cursor:pointer;padding:2px 0 0 28px}
+  .add:disabled{display:none}
+  .err{color:var(--err);font-size:13px}
+  .btn{height:40px;border:0;border-radius:8px;padding:0 26px;font:inherit;font-size:15px;font-weight:700;color:#fff;background:var(--accent);cursor:pointer;white-space:nowrap}
+  .btn:hover{background:#e07d1c}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .push{margin-left:auto}
+  .otp{display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;border-radius:9px;background:#F2F6FB}
+  .otp.show{display:flex}
+  .otp input{width:96px;text-align:center;font-size:20px;font-weight:700;letter-spacing:8px;padding:0}
+  .otp .btn{height:var(--h)}
+  .otp a{color:var(--brand);cursor:pointer;font-size:13px}
+  .done{display:none;padding:36px 20px;text-align:center}
+  .done.show{display:block}
+  .tick{width:56px;height:56px;border-radius:50%;background:var(--ok-bg);color:var(--ok);font-size:30px;display:grid;place-items:center;margin:0 auto 10px}
+  .done h2{margin:0 0 4px;font-size:19px}
+  .done .id{display:inline-block;margin-top:10px;font-size:18px;font-weight:700;color:var(--brand);background:#EEF3FB;border-radius:8px;padding:5px 14px}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  @media (max-width:760px){
+    body{padding:0}
+    .card{border-radius:0;box-shadow:none;min-height:100vh}
+    .head .time{display:none}
+    form{padding:14px 14px 18px}
+    .contact{grid-template-columns:1fr 1fr}
+    .row.th{display:none}
+    .items .row{grid-template-columns:1fr 1fr 52px 18px;grid-template-areas:"b p q x" "d i i i";
+                padding:8px 0;border-bottom:1px solid #EEF1F5;margin:0;gap:5px}
+    .items .no{display:none}
+    input,select{font-size:16px}
+    .items .b{grid-area:b}.items .p{grid-area:p}.items .d{grid-area:d}.items .qty{grid-area:q}.items .pics{grid-area:i}.items .del{grid-area:x}
+    .btn.push{width:100%;margin-left:0}
+    .extra #docsOther{max-width:none;flex-basis:100%}
+    .extra .grp:last-child{flex:1}.extra #need{width:auto;flex:1}
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="head">
+    <span class="mark">FG</span>
+    <div><h1>Fast Group Engineering</h1><small>Yêu cầu báo giá · Request for Quotation</small></div>
+    <span class="time">⏱ khoảng 1 phút</span>
+  </div>
+
+  <form id="form" novalidate>
+    <input class="hp" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <fieldset id="fs">
+      <div class="contact">
+        <input id="name" placeholder="Họ tên" autocomplete="name" aria-label="Họ tên">
+        <input id="phone" placeholder="SĐT" type="tel" inputmode="tel" autocomplete="tel" aria-label="Số điện thoại">
+        <input id="email" placeholder="Email" type="email" inputmode="email" autocomplete="email" aria-label="Email">
+        <input id="mst" placeholder="MST công ty" inputmode="numeric" maxlength="14" autocomplete="off" aria-label="Mã số thuế">
+      </div>
+      <div class="co" id="co"></div>
+
+      <div class="sec">Hàng hóa yêu cầu <span>tối đa 5 mã, mỗi mã 3 hình</span></div>
+      <div class="row th"><span>#</span><span>Hãng</span><span>Mã hàng</span><span>Mô tả thêm</span><span style="text-align:center">SL</span><span>Hình</span><span></span></div>
+      <div class="items" id="items"></div>
+      <button type="button" class="add" id="add">+ Thêm dòng</button>
+
+      <div class="extra">
+        <div class="grp">
+          <span class="lbl">Chứng từ:</span>
+          <label class="chk"><input type="checkbox" class="doc" value="CO"> CO</label>
+          <label class="chk"><input type="checkbox" class="doc" value="CQ"> CQ</label>
+        </div>
+        <input id="docsOther" placeholder="Chứng từ khác (nếu có)" aria-label="Chứng từ khác">
+        <div class="grp" style="gap:6px"><span class="lbl">Cần hàng:</span>
+        <select id="need" required aria-label="Thời gian cần hàng">
+          <option value="" disabled selected hidden>Thời gian cần hàng</option>
+          <option>Gấp (trong 1 tuần)</option><option>2–4 tuần</option><option>1–2 tháng</option>
+          <option>Trên 2 tháng</option><option>Chưa xác định</option>
+        </select></div>
+      </div>
+    </fieldset>
+
+    <div class="bar" id="bar">
+      <span class="err" id="err"></span>
+      <button type="submit" class="btn push" id="submit">Nộp</button>
+    </div>
+
+    <div class="otp" id="otp">
+      <span>Mã 4 số đã gửi tới <b id="otpEmail"></b></span>
+      <input id="code" inputmode="numeric" maxlength="4" autocomplete="one-time-code" aria-label="Mã xác nhận">
+      <button type="button" class="btn" id="confirm">Xác nhận</button>
+      <span class="err" id="otpErr"></span>
+      <span style="margin-left:auto"><a id="resend">Gửi lại mã</a> · <a id="edit">Sửa</a></span>
+    </div>
+  </form>
+
+  <div class="done" id="done">
+    <div class="tick">✓</div>
+    <h2>Nộp thành công</h2>
+    <div style="color:var(--muted)">Chúng tôi sẽ gửi báo giá trong thời gian sớm nhất.</div>
+    <div class="id" id="rfqId"></div>
+  </div>
+</div>
+
+<script>
+/* ===== CẤU HÌNH ===== */
+const API_URL = 'https://script.google.com/macros/s/AKfycbwGHtkL52DEXJnD28CBQG1sm9UA5uX5bPRYzNXZEkT4vgK6x3xYisaia9S5v4ui4K4x4w/exec';
+const BRANDS = ['Crouzet', 'GESTRA', 'GF Piping Systems', 'Hansford Sensors', 'Herion', 'KACON', 'Markal',
+                'Norgren', 'Plastigauge', 'Qlight', 'Rheintacho', 'Tempil', 'W.E.St.', 'Khác'];
+const MAX_ITEMS = 5, PICS_PER_ITEM = 3, START_ROWS = 3, IMG_MAX_PX = 1800;
+/* ==================== */
+
+const $ = id => document.getElementById(id);
+const q = new URLSearchParams(location.search);
+const ref = (q.get('ref') || q.get('kh') || '').slice(0, 100);
+const st = { company: '', address: '', mstLooked: '', payload: null };
+const CAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+
+async function api(action, data) {
+  if (API_URL.startsWith('PASTE_')) throw new Error('Trang chưa cấu hình API_URL.');
+  let r, j;
+  try { r = await fetch(API_URL, { method: 'POST', body: JSON.stringify(Object.assign({ action }, data)) }); }
+  catch (e) { throw new Error('Không kết nối được, vui lòng thử lại.'); }
+  try { j = await r.json(); } catch (e) { throw new Error('Lỗi máy chủ, vui lòng thử lại.'); }
+  if (!j.ok) throw new Error(j.error || 'Có lỗi xảy ra.');
+  return j;
+}
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function busy(btn, on, text) {
+  if (on) { btn.dataset.t = btn.textContent; btn.innerHTML = '<span class="spin"></span>' + text; btn.disabled = true; }
+  else { btn.textContent = btn.dataset.t; btn.disabled = false; }
+}
+
+/* ---- MST -> tên công ty ---- */
+const mstDigits = () => $('mst').value.replace(/\D/g, '');
+async function lookup() {
+  const d = mstDigits();
+  if (!(d.length === 10 || d.length === 13) || d === st.mstLooked) return;
+  st.mstLooked = d; st.company = ''; st.address = '';
+  $('co').innerHTML = '<span class="spin"></span>Đang tra MST…';
+  try {
+    const r = await api('lookupMst', { mst: d });
+    if (mstDigits() !== d) return;
+    st.company = r.name; st.address = r.address;
+    $('co').innerHTML = '<b>✓ ' + esc(r.name) + '</b>' + (r.address ? ' · ' + esc(r.address) : '');
+    $('co').title = r.name + (r.address ? ' – ' + r.address : '');
+  } catch (e) {
+    if (mstDigits() !== d) return;
+    $('co').innerHTML = '<input id="company" placeholder="Không tra được MST – nhập tên công ty" aria-label="Tên công ty">';
+  }
+}
+$('mst').addEventListener('input', () => {
+  const d = mstDigits();
+  if (d.length === 10 || d.length === 13) { clearTimeout(lookup.t); lookup.t = setTimeout(lookup, 400); }
+  else if (st.mstLooked) { st.mstLooked = ''; st.company = ''; $('co').innerHTML = ''; }
+});
+
+/* ---- Dòng hàng ---- */
+async function compress(file) {
+  try {
+    const bmp = await createImageBitmap(file);
+    const s = Math.min(1, IMG_MAX_PX / Math.max(bmp.width, bmp.height));
+    if (s === 1 && file.size < 1.2e6 && /jpe?g|png|webp/.test(file.type)) return file;
+    const c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.85));
+    return blob ? new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' }) : file;
+  } catch (e) { return file; }
+}
+
+function addRow() {
+  const box = $('items');
+  if (box.children.length >= MAX_ITEMS) return;
+  const el = document.createElement('div');
+  el.className = 'row';
+  el.pics = [];
+  el.innerHTML =
+    '<span class="no"></span>' +
+    '<select class="b" data-k="brand" required aria-label="Hãng"><option value="" disabled selected hidden>Chọn hãng</option>' +
+      BRANDS.map(b => '<option>' + esc(b) + '</option>').join('') + '</select>' +
+    '<input class="p" data-k="partNo" placeholder="Mã hàng" aria-label="Mã hàng">' +
+    '<input class="d" data-k="desc" placeholder="Mô tả thêm" aria-label="Mô tả thêm">' +
+    '<input class="qty" data-k="qty" inputmode="decimal" placeholder="1" aria-label="Số lượng">' +
+    '<div class="pics"><label class="cam" title="Thêm hình (tối đa 3)">' + CAM +
+      '<input type="file" accept="image/*" multiple hidden></label></div>' +
+    '<button type="button" class="del" title="Xóa dòng" aria-label="Xóa dòng">×</button>';
+  el.querySelector('input[type=file]').onchange = async e => {
+    for (const f of [...e.target.files]) {
+      if (el.pics.length >= PICS_PER_ITEM) break;
+      if (!f.type.startsWith('image/')) continue;
+      const c = await compress(f);
+      el.pics.push({ file: c, url: URL.createObjectURL(c) });
+    }
+    e.target.value = ''; renderPics(el);
+  };
+  el.querySelector('.del').onclick = () => {
+    el.pics.forEach(p => URL.revokeObjectURL(p.url));
+    el.remove();
+    if (!box.children.length) addRow();
+    sync();
+  };
+  box.appendChild(el);
+  sync();
+  return el;
+}
+function renderPics(el) {
+  const wrap = el.querySelector('.pics'), cam = wrap.querySelector('.cam');
+  wrap.querySelectorAll('.pic').forEach(p => p.remove());
+  el.pics.forEach((p, i) => {
+    const d = document.createElement('div'); d.className = 'pic';
+    d.innerHTML = '<img src="' + p.url + '" alt=""><button type="button" title="Xóa hình" aria-label="Xóa hình">×</button>';
+    d.querySelector('button').onclick = () => { URL.revokeObjectURL(p.url); el.pics.splice(i, 1); renderPics(el); };
+    wrap.insertBefore(d, cam);
+  });
+  cam.style.display = el.pics.length >= PICS_PER_ITEM ? 'none' : '';
+}
+function sync() {
+  [...$('items').children].forEach((el, i) => el.querySelector('.no').textContent = i + 1);
+  $('add').disabled = $('items').children.length >= MAX_ITEMS;
+}
+$('add').onclick = () => addRow().querySelector('select').focus();
+
+function readRows() {
+  return [...$('items').children].map(el => {
+    const o = { pics: el.pics };
+    el.querySelectorAll('[data-k]').forEach(i => o[i.dataset.k] = i.value.trim());
+    return o;
+  }).filter(o => o.partNo || o.desc || o.pics.length);
+}
+
+/* ---- Nộp -> gửi mã ---- */
+const toB64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(f); });
+function fail(msg, el) { $('err').textContent = msg; if (el) el.focus(); }
+
+$('form').addEventListener('submit', async e => {
+  e.preventDefault(); $('err').textContent = '';
+  const name = $('name').value.trim(), phone = $('phone').value.trim(), email = $('email').value.trim(), d = mstDigits();
+  if (!name) return fail('Nhập họ tên.', $('name'));
+  const pd = phone.replace(/\D/g, '');
+  if (pd.length < 9 || pd.length > 12) return fail('SĐT chưa đúng.', $('phone'));
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail('Email chưa đúng.', $('email'));
+  if (!(d.length === 10 || d.length === 13)) return fail('MST gồm 10 hoặc 13 số.', $('mst'));
+  const coName = () => st.company || ($('company') ? $('company').value.trim() : '');
+  if (!coName() && !$('company')) { st.mstLooked = ''; await lookup(); }
+  const company = coName();
+  if (!company) return fail('Nhập tên công ty.', $('company'));
+  const rows = readRows();
+  if (!rows.length) return fail('Nhập ít nhất một mã hàng.', $('items').querySelector('.p'));
+
+  const b = $('submit'); busy(b, true, 'Đang gửi mã…');
+  try {
+    const items = [];
+    for (const r of rows) {
+      const files = [];
+      for (const p of r.pics) files.push({ name: p.file.name, mimeType: p.file.type, data: await toB64(p.file) });
+      items.push({ brand: r.brand, partNo: r.partNo, desc: r.desc, qty: r.qty || '1', files });
+    }
+    const docs = [...document.querySelectorAll('.doc:checked')].map(c => c.value)
+      .concat($('docsOther').value.trim() ? [$('docsOther').value.trim()] : []).join(', ');
+    st.payload = { name, phone, email, mst: d, companyName: company, address: st.address, items, docs, need: $('need').value, ref, website: $('website').value };
+    await api('sendOtp', { email });
+    $('fs').disabled = true; $('bar').style.display = 'none';
+    $('otpEmail').textContent = email; $('code').value = ''; $('otpErr').textContent = '';
+    $('otp').classList.add('show'); $('code').focus();
+  } catch (err) { fail(err.message); }
+  finally { busy(b, false); }
+});
+
+/* ---- Xác nhận mã -> lưu ---- */
+async function confirmCode() {
+  const code = $('code').value.replace(/\D/g, '');
+  if (code.length !== 4) { $('otpErr').textContent = 'Mã gồm 4 số.'; return; }
+  const b = $('confirm'); if (b.disabled) return;
+  busy(b, true, 'Đang nộp…'); $('otpErr').textContent = '';
+  try {
+    const r = await api('submit', Object.assign({}, st.payload, { code }));
+    $('form').style.display = 'none'; $('rfqId').textContent = r.id; $('done').classList.add('show');
+  } catch (err) { $('otpErr').textContent = err.message; }
+  finally { busy(b, false); }
+}
+$('confirm').onclick = confirmCode;
+$('code').addEventListener('input', e => { if (e.target.value.replace(/\D/g, '').length === 4) confirmCode(); });
+$('resend').onclick = async () => {
+  $('otpErr').textContent = '';
+  try { await api('sendOtp', { email: st.payload.email }); $('otpErr').textContent = 'Đã gửi lại mã.'; }
+  catch (err) { $('otpErr').textContent = err.message; }
+};
+$('edit').onclick = () => { $('otp').classList.remove('show'); $('fs').disabled = false; $('bar').style.display = ''; };
+
+for (let i = 0; i < START_ROWS; i++) addRow();
+</script>
+</body>
+</html>
