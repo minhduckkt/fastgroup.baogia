@@ -7,6 +7,8 @@
 <meta name="robots" content="noindex">
 <meta property="og:title" content="Fast Group Engineering – Yêu cầu báo giá">
 <meta name="theme-color" content="#0B2E59">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="apple-touch-icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,10 +16,15 @@
   :root{--brand:#0B2E59;--accent:#F28C28;--bg:#EEF1F5;--ink:#1B2430;--muted:#7A8594;--line:#D8DEE6;
         --ok:#12805C;--ok-bg:#E4F5EE;--err:#C0352B;--focus:#2F6FEB;--h:36px}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:28px 16px}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:28px 16px;min-height:100vh}
+  body::before{content:"";position:fixed;inset:-12px;z-index:-1;
+    background:linear-gradient(180deg,rgba(242,245,249,.86),rgba(234,238,244,.97)),url(bg.jpg) center top/cover no-repeat;
+    filter:blur(3px)}
   .card{max-width:1040px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(11,46,89,.10);overflow:hidden}
-  .head{background:var(--brand);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:12px}
-  .mark{width:32px;height:32px;border-radius:8px;background:var(--accent);color:var(--brand);font-weight:700;font-size:13px;display:grid;place-items:center;flex:none}
+  .head{color:#fff;padding:13px 20px;display:flex;align-items:center;gap:12px;
+    background:linear-gradient(100deg,rgba(11,46,89,.98) 0%,rgba(11,46,89,.93) 45%,rgba(11,46,89,.55) 100%),url(bg.jpg) right center/cover no-repeat;
+    background-color:var(--brand)}
+  .logo{width:42px;height:42px;flex:none;border-radius:10px;background:#fff;padding:4px;object-fit:contain;box-shadow:0 2px 7px rgba(0,0,0,.22)}
   .head h1{font-size:17px;margin:0;font-weight:700;line-height:1.2}
   .head small{display:block;opacity:.7;font-size:12px}
   .head .time{margin-left:auto;font-size:12px;opacity:.75;white-space:nowrap}
@@ -72,8 +79,15 @@
   .otp a{color:var(--brand);cursor:pointer;font-size:13px}
   .done{display:none;padding:36px 20px;text-align:center}
   .done.show{display:block}
+  body:has(.done.show) .head .time{display:none}
   .tick{width:56px;height:56px;border-radius:50%;background:var(--ok-bg);color:var(--ok);font-size:30px;display:grid;place-items:center;margin:0 auto 10px}
-  .done h2{margin:0 0 4px;font-size:19px}
+  .done h2{margin:0 0 8px;font-size:21px;color:var(--brand)}
+  .dsub{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+  .dnote{margin:10px 0 0;font-size:12.5px;color:var(--muted)}
+  .dcontact{margin-top:18px;padding-top:14px;border-top:1px solid #EEF1F5;font-size:13px;color:var(--muted)}
+  .dcontact a{color:var(--brand);font-weight:600;text-decoration:none}
+  .foot{padding:11px 20px;border-top:1px solid #EEF1F5;background:#FAFBFD;text-align:center;font-size:11.5px;color:var(--muted);line-height:1.6}
+  .foot b{color:var(--brand)}
   .done .id{display:inline-block;margin-top:10px;font-size:18px;font-weight:700;color:var(--brand);background:#EEF3FB;border-radius:8px;padding:5px 14px}
   .spin{display:inline-block;width:13px;height:13px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
   @keyframes sp{to{transform:rotate(360deg)}}
@@ -99,7 +113,7 @@
 <body>
 <div class="card">
   <div class="head">
-    <span class="mark">FG</span>
+    <img class="logo" src="logo.png" alt="Fast Group" width="42" height="42">
     <div><h1>Fast Group Engineering</h1><small>Yêu cầu báo giá · Request for Quotation</small></div>
     <span class="time">⏱ khoảng 1 phút</span>
   </div>
@@ -152,10 +166,18 @@
 
   <div class="done" id="done">
     <div class="tick">✓</div>
-    <h2>Nộp thành công</h2>
-    <div style="color:var(--muted)">Chúng tôi sẽ gửi báo giá trong thời gian sớm nhất.</div>
+    <h2>Cảm ơn Quý khách!</h2>
+    <p class="dsub">Yêu cầu báo giá đã được chuyển tới bộ phận kinh doanh Fast Group.<br>
+      Chúng tôi sẽ kiểm tra và phản hồi trong thời gian sớm nhất.</p>
     <div class="id" id="rfqId"></div>
+    <p class="dnote">Vui lòng lưu lại mã yêu cầu trên để tiện tra cứu.</p>
+    <div class="dcontact">Cần trao đổi thêm, Quý khách liên hệ
+      <a href="mailto:minhduc@fastgroup.vn">minhduc@fastgroup.vn</a> ·
+      <a href="tel:+84938888958">0938 888 958</a></div>
   </div>
+
+  <div class="foot"><b>FAST GROUP CO., LTD.</b> · 51 Lê Văn Lộc, Phường Vũng Tàu, TP. Hồ Chí Minh<br>
+    minhduc@fastgroup.vn · 0938 888 958</div>
 </div>
 
 <script>
