@@ -37,6 +37,8 @@
   select:invalid{color:#A3ACB8}
   input:focus,select:focus{border-color:var(--focus);box-shadow:0 0 0 3px rgba(47,111,235,.14)}
   .contact{display:grid;grid-template-columns:1.1fr .8fr 1.3fr .9fr;gap:8px}
+  .memo{display:none;margin:7px 0 0;font-size:12px;color:var(--muted)}
+  .memo a{color:var(--brand);cursor:pointer;font-weight:600;text-decoration:underline}
   .co{font-size:12.5px;color:var(--muted);margin:6px 0 0;min-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .co b{color:var(--ok);font-weight:600}
   .co input{height:32px;margin-top:2px;max-width:520px}
@@ -127,6 +129,7 @@
         <input id="email" placeholder="Email" type="email" inputmode="email" autocomplete="email" aria-label="Email">
         <input id="mst" placeholder="MST công ty" inputmode="numeric" maxlength="14" autocomplete="off" aria-label="Mã số thuế">
       </div>
+      <div class="memo" id="memo"></div>
       <div class="co" id="co"></div>
 
       <div class="sec">Hàng hóa yêu cầu <span>tối đa 5 mã, mỗi mã 3 hình</span></div>
@@ -352,6 +355,7 @@ async function confirmCode() {
   busy(b, true, 'Đang nộp…'); $('otpErr').textContent = '';
   try {
     const r = await api('submit', Object.assign({}, st.payload, { code }));
+    saveContact();
     $('form').style.display = 'none'; $('rfqId').textContent = r.id; $('done').classList.add('show');
   } catch (err) { $('otpErr').textContent = err.message; }
   finally { busy(b, false); }
@@ -365,7 +369,33 @@ $('resend').onclick = async () => {
 };
 $('edit').onclick = () => { $('otp').classList.remove('show'); $('fs').disabled = false; $('bar').style.display = ''; };
 
+/* ---- Nhớ thông tin liên hệ trên máy khách (không gửi đi đâu) ---- */
+const LS_KEY = 'fg_contact_v1';
+function saveContact() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({
+    n: $('name').value.trim(), p: $('phone').value.trim(),
+    e: $('email').value.trim(), m: mstDigits() })); } catch (e) {}
+}
+function forgetContact() {
+  try { localStorage.removeItem(LS_KEY); } catch (e) {}
+  ['name', 'phone', 'email', 'mst'].forEach(i => $(i).value = '');
+  st.mstLooked = ''; st.company = ''; st.address = '';
+  $('co').innerHTML = ''; $('memo').style.display = 'none'; $('name').focus();
+}
+function loadContact() {
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch (e) { return; }
+  if (!d || !d.e) return;
+  $('name').value = d.n || ''; $('phone').value = d.p || '';
+  $('email').value = d.e || ''; $('mst').value = d.m || '';
+  $('memo').innerHTML = 'Đã điền sẵn thông tin lần trước · <a id="forget">Xóa</a>';
+  $('memo').style.display = 'block';
+  $('forget').onclick = forgetContact;
+  if (d.m) lookup();
+}
+
 for (let i = 0; i < START_ROWS; i++) addRow();
+loadContact();
 </script>
 </body>
 </html>
