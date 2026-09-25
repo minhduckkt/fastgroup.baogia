@@ -37,6 +37,8 @@
   select:invalid{color:#A3ACB8}
   input:focus,select:focus{border-color:var(--focus);box-shadow:0 0 0 3px rgba(47,111,235,.14)}
   .contact{display:grid;grid-template-columns:1.1fr .8fr 1.3fr .9fr;gap:8px}
+  .memo{display:none;margin:7px 0 0;font-size:12px;color:var(--muted)}
+  .memo a{color:var(--brand);cursor:pointer;font-weight:600;text-decoration:underline}
   .co{font-size:12.5px;color:var(--muted);margin:6px 0 0;min-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .co b{color:var(--ok);font-weight:600}
   .co input{height:32px;margin-top:2px;max-width:520px}
@@ -92,6 +94,17 @@
   .spin{display:inline-block;width:13px;height:13px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
   @keyframes sp{to{transform:rotate(360deg)}}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  /* Chế độ nhập hộ (?admin) */
+  .adm-only{display:none}
+  body.admin .adm-only{display:inline-flex}
+  body.admin .head{background:linear-gradient(100deg,#5B2A00,#8A4A12)}
+  .akey{display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px;padding:10px 12px;border-radius:9px;background:#FFF4E5;font-size:13px}
+  .akey.show{display:flex}
+  .akey input{width:190px;text-transform:uppercase;letter-spacing:2px;font-weight:600}
+  .akey .btn{height:var(--h)}
+  .extra .adm-only #src{width:150px}
+  .lnk{color:var(--muted);font-size:12px;cursor:pointer;text-decoration:underline}
+  body.admin #done .adm-only{display:flex}
   @media (max-width:760px){
     body{padding:0}
     .card{border-radius:0;box-shadow:none;min-height:100vh}
@@ -120,6 +133,12 @@
 
   <form id="form" novalidate>
     <input class="hp" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <div class="akey" id="akey">
+      <b>Chế độ nhập hộ.</b> Nhập mã quản trị (chỉ cần 1 lần trên máy này):
+      <input id="akeyIn" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX" aria-label="Mã quản trị">
+      <button type="button" class="btn" id="akeyBtn">Mở</button>
+      <span class="err" id="akeyErr"></span>
+    </div>
     <fieldset id="fs">
       <div class="contact">
         <input id="name" placeholder="Họ tên" autocomplete="name" aria-label="Họ tên">
@@ -127,6 +146,7 @@
         <input id="email" placeholder="Email" type="email" inputmode="email" autocomplete="email" aria-label="Email">
         <input id="mst" placeholder="MST công ty" inputmode="numeric" maxlength="14" autocomplete="off" aria-label="Mã số thuế">
       </div>
+      <div class="memo" id="memo"></div>
       <div class="co" id="co"></div>
 
       <div class="sec">Hàng hóa yêu cầu <span>tối đa 5 mã, mỗi mã 3 hình</span></div>
@@ -147,6 +167,10 @@
           <option>Gấp (trong 1 tuần)</option><option>2–4 tuần</option><option>1–2 tháng</option>
           <option>Trên 2 tháng</option><option>Chưa xác định</option>
         </select></div>
+        <div class="grp adm-only" style="gap:6px"><span class="lbl">Nguồn:</span>
+          <input id="src" placeholder="VD zalo-anh-tuan" aria-label="Nguồn"></div>
+        <label class="chk adm-only"><input type="checkbox" id="sendConfirm"> Gửi email xác nhận cho khách</label>
+        <a class="lnk adm-only" id="akeyForget">Quên mã trên máy này</a>
       </div>
     </fieldset>
 
@@ -171,6 +195,7 @@
       Chúng tôi sẽ kiểm tra và phản hồi trong thời gian sớm nhất.</p>
     <div class="id" id="rfqId"></div>
     <p class="dnote">Vui lòng lưu lại mã yêu cầu trên để tiện tra cứu.</p>
+    <p class="adm-only" style="justify-content:center;margin-top:16px"><button type="button" class="btn" id="again">+ Nhập RFQ khác</button></p>
     <div class="dcontact">Cần trao đổi thêm, Quý khách liên hệ
       <a href="mailto:minhduc@fastgroup.vn">minhduc@fastgroup.vn</a> ·
       <a href="tel:+84938888958">0938 888 958</a></div>
@@ -185,11 +210,18 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbwGHtkL52DEXJnD28CBQG1s
 const BRANDS = ['Crouzet', 'GESTRA', 'GF Piping Systems', 'Hansford Sensors', 'Herion', 'KACON', 'Markal',
                 'Norgren', 'Plastigauge', 'Qlight', 'Rheintacho', 'Tempil', 'W.E.St.', 'Khác'];
 const MAX_ITEMS = 5, PICS_PER_ITEM = 3, START_ROWS = 3, IMG_MAX_PX = 1800;
+const ADMIN_MAX_ITEMS = 20;   // chế độ nhập hộ
 /* ==================== */
 
 const $ = id => document.getElementById(id);
 const q = new URLSearchParams(location.search);
 const ref = (q.get('ref') || q.get('kh') || '').slice(0, 100);
+const ADMIN = q.has('admin');                    // link nhập hộ: .../?admin
+const AK = 'fg_admin_key';
+let adminKey = '';
+try { adminKey = ADMIN ? (localStorage.getItem(AK) || '') : ''; } catch (e) {}
+const maxItems = () => ADMIN ? ADMIN_MAX_ITEMS : MAX_ITEMS;
+const showCompanyInput = () => { if (!$('company')) $('co').innerHTML = '<input id="company" placeholder="Tên công ty" aria-label="Tên công ty">'; };
 const st = { company: '', address: '', mstLooked: '', payload: null };
 const CAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 
@@ -229,7 +261,7 @@ async function lookup() {
 $('mst').addEventListener('input', () => {
   const d = mstDigits();
   if (d.length === 10 || d.length === 13) { clearTimeout(lookup.t); lookup.t = setTimeout(lookup, 400); }
-  else if (st.mstLooked) { st.mstLooked = ''; st.company = ''; $('co').innerHTML = ''; }
+  else if (st.mstLooked) { st.mstLooked = ''; st.company = ''; $('co').innerHTML = ''; if (ADMIN) showCompanyInput(); }
 });
 
 /* ---- Dòng hàng ---- */
@@ -248,7 +280,7 @@ async function compress(file) {
 
 function addRow() {
   const box = $('items');
-  if (box.children.length >= MAX_ITEMS) return;
+  if (box.children.length >= maxItems()) return;
   const el = document.createElement('div');
   el.className = 'row';
   el.pics = [];
@@ -294,7 +326,7 @@ function renderPics(el) {
 }
 function sync() {
   [...$('items').children].forEach((el, i) => el.querySelector('.no').textContent = i + 1);
-  $('add').disabled = $('items').children.length >= MAX_ITEMS;
+  $('add').disabled = $('items').children.length >= maxItems();
 }
 $('add').onclick = () => addRow().querySelector('select').focus();
 
@@ -310,8 +342,21 @@ function readRows() {
 const toB64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(f); });
 function fail(msg, el) { $('err').textContent = msg; if (el) el.focus(); }
 
+async function buildItems(rows) {
+  const items = [];
+  for (const r of rows) {
+    const files = [];
+    for (const p of r.pics) files.push({ name: p.file.name, mimeType: p.file.type, data: await toB64(p.file) });
+    items.push({ brand: r.brand, partNo: r.partNo, desc: r.desc, qty: r.qty || '1', files });
+  }
+  return items;
+}
+const readDocs = () => [...document.querySelectorAll('.doc:checked')].map(c => c.value)
+  .concat($('docsOther').value.trim() ? [$('docsOther').value.trim()] : []).join(', ');
+
 $('form').addEventListener('submit', async e => {
   e.preventDefault(); $('err').textContent = '';
+  if (ADMIN) return adminSave();
   const name = $('name').value.trim(), phone = $('phone').value.trim(), email = $('email').value.trim(), d = mstDigits();
   if (!name) return fail('Nhập họ tên.', $('name'));
   const pd = phone.replace(/\D/g, '');
@@ -327,14 +372,7 @@ $('form').addEventListener('submit', async e => {
 
   const b = $('submit'); busy(b, true, 'Đang gửi mã…');
   try {
-    const items = [];
-    for (const r of rows) {
-      const files = [];
-      for (const p of r.pics) files.push({ name: p.file.name, mimeType: p.file.type, data: await toB64(p.file) });
-      items.push({ brand: r.brand, partNo: r.partNo, desc: r.desc, qty: r.qty || '1', files });
-    }
-    const docs = [...document.querySelectorAll('.doc:checked')].map(c => c.value)
-      .concat($('docsOther').value.trim() ? [$('docsOther').value.trim()] : []).join(', ');
+    const items = await buildItems(rows), docs = readDocs();
     st.payload = { name, phone, email, mst: d, companyName: company, address: st.address, items, docs, need: $('need').value, ref, website: $('website').value };
     await api('sendOtp', { email });
     $('fs').disabled = true; $('bar').style.display = 'none';
@@ -352,6 +390,7 @@ async function confirmCode() {
   busy(b, true, 'Đang nộp…'); $('otpErr').textContent = '';
   try {
     const r = await api('submit', Object.assign({}, st.payload, { code }));
+    saveContact();
     $('form').style.display = 'none'; $('rfqId').textContent = r.id; $('done').classList.add('show');
   } catch (err) { $('otpErr').textContent = err.message; }
   finally { busy(b, false); }
@@ -365,7 +404,96 @@ $('resend').onclick = async () => {
 };
 $('edit').onclick = () => { $('otp').classList.remove('show'); $('fs').disabled = false; $('bar').style.display = ''; };
 
+/* ---- Nhớ thông tin liên hệ trên máy khách (không gửi đi đâu) ---- */
+const LS_KEY = 'fg_contact_v1';
+function saveContact() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({
+    n: $('name').value.trim(), p: $('phone').value.trim(),
+    e: $('email').value.trim(), m: mstDigits() })); } catch (e) {}
+}
+function forgetContact() {
+  try { localStorage.removeItem(LS_KEY); } catch (e) {}
+  ['name', 'phone', 'email', 'mst'].forEach(i => $(i).value = '');
+  st.mstLooked = ''; st.company = ''; st.address = '';
+  $('co').innerHTML = ''; $('memo').style.display = 'none'; $('name').focus();
+}
+function loadContact() {
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch (e) { return; }
+  if (!d || !d.e) return;
+  $('name').value = d.n || ''; $('phone').value = d.p || '';
+  $('email').value = d.e || ''; $('mst').value = d.m || '';
+  $('memo').innerHTML = 'Đã điền sẵn thông tin lần trước · <a id="forget">Xóa</a>';
+  $('memo').style.display = 'block';
+  $('forget').onclick = forgetContact;
+  if (d.m) lookup();
+}
+
+/* ---- CHẾ ĐỘ NHẬP HỘ (Mr. Đức) – link .../?admin ---- */
+async function adminSave() {
+  const name = $('name').value.trim(), phone = $('phone').value.trim(), email = $('email').value.trim(), d = mstDigits();
+  const pd = phone.replace(/\D/g, '');
+  if (phone && (pd.length < 9 || pd.length > 12)) return fail('SĐT chưa đúng (hoặc để trống).', $('phone'));
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail('Email chưa đúng (hoặc để trống).', $('email'));
+  if (d && !(d.length === 10 || d.length === 13)) return fail('MST gồm 10 hoặc 13 số (hoặc để trống).', $('mst'));
+  if (d && !st.company && !$('company')) { st.mstLooked = ''; await lookup(); }
+  const company = st.company || ($('company') ? $('company').value.trim() : '');
+  if (!company) { showCompanyInput(); return fail('Nhập tên công ty.', $('company')); }
+  const rows = readRows();
+  if (!rows.length) return fail('Nhập ít nhất một mã hàng.', $('items').querySelector('.p'));
+  if ($('sendConfirm').checked && !email) return fail('Muốn gửi email xác nhận thì cần nhập email khách.', $('email'));
+
+  const b = $('submit'); busy(b, true, 'Đang lưu…');
+  try {
+    const r = await api('adminSubmit', {
+      key: adminKey, name, phone, email, mst: d, companyName: company, address: st.address,
+      items: await buildItems(rows), docs: readDocs(), need: $('need').value,
+      ref: $('src').value.trim(), sendConfirm: $('sendConfirm').checked });
+    $('form').style.display = 'none'; $('rfqId').textContent = r.id; $('done').classList.add('show');
+  } catch (err) {
+    fail(err.message);
+    if (/Mã quản trị/.test(err.message)) askKey();
+  } finally { busy(b, false); }
+}
+function askKey() {
+  $('fs').disabled = true; $('bar').style.display = 'none';
+  $('akey').classList.add('show'); $('akeyIn').focus();
+}
+async function unlock() {
+  const k = $('akeyIn').value.trim(); if (!k) return;
+  const b = $('akeyBtn'); busy(b, true, 'Đang kiểm tra…'); $('akeyErr').textContent = '';
+  try {
+    await api('adminCheck', { key: k });
+    adminKey = k; try { localStorage.setItem(AK, k); } catch (e) {}
+    $('akey').classList.remove('show'); $('fs').disabled = false; $('bar').style.display = ''; $('err').textContent = '';
+    $('name').focus();
+  } catch (err) { $('akeyErr').textContent = err.message; }
+  finally { busy(b, false); }
+}
+function initAdmin() {
+  document.body.classList.add('admin');
+  document.title = 'Nhập hộ RFQ | Fast Group';
+  document.querySelector('.head small').textContent = 'Chế độ nhập hộ · Mr. Đức';
+  document.querySelector('.head .time').textContent = '🔧 Không cần mã email';
+  document.querySelector('.sec span').textContent = 'tối đa ' + ADMIN_MAX_ITEMS + ' mã, mỗi mã 3 hình';
+  $('memo').textContent = 'Chỉ bắt buộc Tên công ty + mã hàng. Họ tên, SĐT, email, MST có thì nhập, không có để trống.';
+  $('memo').style.display = 'block';
+  $('submit').textContent = 'Lưu RFQ';
+  $('src').value = ref || 'zalo';
+  document.querySelector('#done h2').textContent = 'Đã lưu vào bảng RFQ';
+  document.querySelector('#done .dsub').textContent = 'Hình (nếu có) đã lên Drive.';
+  document.querySelector('#done .dnote').style.display = 'none';
+  document.querySelector('#done .dcontact').style.display = 'none';
+  $('again').onclick = () => location.reload();
+  $('akeyBtn').onclick = unlock;
+  $('akeyIn').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); unlock(); } });
+  $('akeyForget').onclick = () => { try { localStorage.removeItem(AK); } catch (e) {} adminKey = ''; $('akeyIn').value = ''; askKey(); };
+  showCompanyInput();
+  if (!adminKey) askKey();
+}
+
 for (let i = 0; i < START_ROWS; i++) addRow();
+if (ADMIN) initAdmin(); else loadContact();
 </script>
 </body>
 </html>
