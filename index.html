@@ -44,6 +44,7 @@
   .co input{height:32px;margin-top:2px;max-width:520px}
   .sec{display:flex;align-items:baseline;gap:8px;margin:14px 0 6px;font-size:12.5px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.4px}
   .sec span{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)}
+  .sec .ft{font-style:normal}
   .row{display:grid;grid-template-columns:22px 150px 1.1fr 1.9fr 64px 118px 22px;gap:6px;align-items:center}
   .row.th{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:3px}
   .items .row{margin-bottom:5px}
@@ -54,6 +55,7 @@
   .pic img{width:100%;height:100%;object-fit:cover;display:block}
   .pic button{position:absolute;inset:0;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:15px;opacity:0;cursor:pointer;padding:0}
   .pic:hover button,.pic button:focus{opacity:1}
+  .pic.f{display:grid;place-items:center;background:#F2F6FB;font-size:9.5px;font-weight:700;color:var(--brand);letter-spacing:.2px}
   .cam{width:var(--h);height:var(--h);border:1px dashed #B9C3D0;border-radius:6px;display:grid;place-items:center;cursor:pointer;background:#FAFBFD;flex:none;color:var(--brand)}
   .cam:hover{border-color:var(--brand)}
   .cam svg{width:18px;height:18px}
@@ -90,6 +92,7 @@
   .dcontact a{color:var(--brand);font-weight:600;text-decoration:none}
   .foot{padding:12px 20px;border-top:1px solid #EEF1F5;background:#FAFBFD;text-align:center;font-size:11.5px;color:var(--muted);letter-spacing:.4px}
   .foot b{color:var(--brand)}
+  .foot .addr{display:block;margin-top:2px;letter-spacing:0;font-size:11.5px}
   .done .id{display:inline-block;margin-top:10px;font-size:18px;font-weight:700;color:var(--brand);background:#EEF3FB;border-radius:8px;padding:5px 14px}
   .spin{display:inline-block;width:13px;height:13px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
   @keyframes sp{to{transform:rotate(360deg)}}
@@ -112,6 +115,7 @@
     form{padding:14px 14px 18px}
     .contact{grid-template-columns:1fr 1fr}
     .row.th{display:none}
+    .sec .ft{display:none}
     .items .row{grid-template-columns:1fr 1fr 52px 18px;grid-template-areas:"b p q x" "d i i i";
                 padding:8px 0;border-bottom:1px solid #EEF1F5;margin:0;gap:5px}
     .items .no{display:none}
@@ -149,8 +153,8 @@
       <div class="memo" id="memo"></div>
       <div class="co" id="co"></div>
 
-      <div class="sec">Hàng hóa yêu cầu <span>tối đa 5 mã, mỗi mã 3 hình</span></div>
-      <div class="row th"><span>#</span><span>Hãng</span><span>Mã hàng</span><span>Mô tả thêm</span><span style="text-align:center">SL</span><span>Hình</span><span></span></div>
+      <div class="sec">Hàng hóa yêu cầu <span>tối đa 5 mã, mỗi mã 3 hình/file<i class="ft"> (Word, Excel, PDF, CAD) dưới 5MB</i></span></div>
+      <div class="row th"><span>#</span><span>Hãng</span><span>Mã hàng</span><span>Mô tả thêm</span><span style="text-align:center">SL</span><span>Hình / File</span><span></span></div>
       <div class="items" id="items"></div>
       <button type="button" class="add" id="add">+ Thêm dòng</button>
 
@@ -191,7 +195,7 @@
   <div class="done" id="done">
     <div class="tick">✓</div>
     <h2>Cảm ơn Quý khách!</h2>
-    <p class="dsub">Yêu cầu báo giá đã được chuyển tới bộ phận kinh doanh Fast Group Engineering.<br>
+    <p class="dsub">Yêu cầu báo giá đã được chuyển tới bộ phận kinh doanh Fast Group.<br>
       Chúng tôi sẽ kiểm tra và phản hồi trong thời gian sớm nhất.</p>
     <div class="id" id="rfqId"></div>
     <p class="dnote">Vui lòng lưu lại mã yêu cầu trên để tiện tra cứu.</p>
@@ -201,7 +205,9 @@
       <a href="tel:+84938888958">0938 888 958</a></div>
   </div>
 
-  <div class="foot"><b>FAST GROUP CO., LTD.</b> · 150/41 Nguyễn Cư Trinh, Phường Cầu Ông Lãnh, TP. Hồ Chí Minh</div>
+  <div class="foot"><b>FAST GROUP CO., LTD.</b>
+    <span class="addr">Trụ sở chính: 51 Lê Văn Lộc, Phường Vũng Tàu, TP. Hồ Chí Minh</span>
+    <span class="addr">Địa chỉ đăng ký: 150/41 Nguyễn Cư Trinh, Phường Cầu Ông Lãnh, TP. Hồ Chí Minh</span></div>
 </div>
 
 <script>
@@ -210,6 +216,11 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbw7re27S93UEOSWlLqJHOKz
 const BRANDS = ['Crouzet', 'GESTRA', 'GF Piping Systems', 'Hansford Sensors', 'Herion', 'KACON', 'Markal',
                 'Norgren', 'Plastigauge', 'Qlight', 'Rheintacho', 'Tempil', 'W.E.St.', 'Khác'];
 const MAX_ITEMS = 5, PICS_PER_ITEM = 3, START_ROWS = 3, IMG_MAX_PX = 1800;
+const MAX_FILE_MB = 5, MAX_TOTAL_MB = 20;          // mỗi file ≤ 5MB, cả RFQ ≤ 20MB
+// File ngoài hình được nhận (đuôi -> nhãn hiện trên ô). Thêm đuôi ở đây thì nhớ thêm cả trong Code.gs (FILE_TYPES)
+const DOC_EXT = { pdf: 'PDF', doc: 'DOC', docx: 'DOC', xls: 'XLS', xlsx: 'XLS', dwg: 'CAD', dxf: 'CAD' };
+const ACCEPT = 'image/*,' + Object.keys(DOC_EXT).map(e => '.' + e).join(',');
+const extOf = n => (String(n).match(/\.([a-z0-9]+)$/i) || [])[1]?.toLowerCase() || '';
 const ADMIN_MAX_ITEMS = 20;   // chế độ nhập hộ
 /* ==================== */
 
@@ -291,20 +302,30 @@ function addRow() {
     '<input class="p" data-k="partNo" placeholder="Mã hàng" aria-label="Mã hàng">' +
     '<input class="d" data-k="desc" placeholder="Mô tả thêm" aria-label="Mô tả thêm">' +
     '<input class="qty" data-k="qty" inputmode="decimal" placeholder="1" aria-label="Số lượng">' +
-    '<div class="pics"><label class="cam" title="Thêm hình (tối đa 3)">' + CAM +
-      '<input type="file" accept="image/*" multiple hidden></label></div>' +
+    '<div class="pics"><label class="cam" title="Thêm hình hoặc file Word, Excel, PDF, CAD (tối đa 3, mỗi file dưới 5MB)">' + CAM +
+      '<input type="file" accept="' + ACCEPT + '" multiple hidden></label></div>' +
     '<button type="button" class="del" title="Xóa dòng" aria-label="Xóa dòng">×</button>';
   el.querySelector('input[type=file]').onchange = async e => {
+    const bad = [];
+    $('err').textContent = '';
     for (const f of [...e.target.files]) {
-      if (el.pics.length >= PICS_PER_ITEM) break;
-      if (!f.type.startsWith('image/')) continue;
-      const c = await compress(f);
-      el.pics.push({ file: c, url: URL.createObjectURL(c) });
+      if (el.pics.length >= PICS_PER_ITEM) { bad.push('mỗi mã tối đa ' + PICS_PER_ITEM + ' hình/file'); break; }
+      const ext = extOf(f.name);
+      const isImg = !DOC_EXT[ext] && (f.type.startsWith('image/') || /^(jpe?g|png|webp|gif|heic|heif)$/.test(ext));
+      if (isImg) {
+        const c = await compress(f);
+        if (c.size > MAX_FILE_MB * 1048576) { bad.push(f.name + ' lớn hơn ' + MAX_FILE_MB + 'MB'); continue; }
+        el.pics.push({ file: c, url: URL.createObjectURL(c) });
+      } else if (DOC_EXT[ext]) {
+        if (f.size > MAX_FILE_MB * 1048576) { bad.push(f.name + ' lớn hơn ' + MAX_FILE_MB + 'MB'); continue; }
+        el.pics.push({ file: f, tag: DOC_EXT[ext] });
+      } else bad.push(f.name + ' không đúng loại file (nhận hình, Word, Excel, PDF, CAD)');
     }
+    if (bad.length) $('err').textContent = 'Không thêm được: ' + bad.join('; ') + '.';
     e.target.value = ''; renderPics(el);
   };
   el.querySelector('.del').onclick = () => {
-    el.pics.forEach(p => URL.revokeObjectURL(p.url));
+    el.pics.forEach(p => p.url && URL.revokeObjectURL(p.url));
     el.remove();
     if (!box.children.length) addRow();
     sync();
@@ -317,9 +338,11 @@ function renderPics(el) {
   const wrap = el.querySelector('.pics'), cam = wrap.querySelector('.cam');
   wrap.querySelectorAll('.pic').forEach(p => p.remove());
   el.pics.forEach((p, i) => {
-    const d = document.createElement('div'); d.className = 'pic';
-    d.innerHTML = '<img src="' + p.url + '" alt=""><button type="button" title="Xóa hình" aria-label="Xóa hình">×</button>';
-    d.querySelector('button').onclick = () => { URL.revokeObjectURL(p.url); el.pics.splice(i, 1); renderPics(el); };
+    const d = document.createElement('div'); d.className = p.url ? 'pic' : 'pic f';
+    d.title = p.file.name;
+    d.innerHTML = (p.url ? '<img src="' + p.url + '" alt="">' : esc(p.tag)) +
+      '<button type="button" title="Xóa" aria-label="Xóa">×</button>';
+    d.querySelector('button').onclick = () => { if (p.url) URL.revokeObjectURL(p.url); el.pics.splice(i, 1); renderPics(el); };
     wrap.insertBefore(d, cam);
   });
   cam.style.display = el.pics.length >= PICS_PER_ITEM ? 'none' : '';
@@ -343,10 +366,13 @@ const toB64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onl
 function fail(msg, el) { $('err').textContent = msg; if (el) el.focus(); }
 
 async function buildItems(rows) {
+  const total = rows.reduce((a, r) => a + r.pics.reduce((b, p) => b + p.file.size, 0), 0);
+  if (total > MAX_TOTAL_MB * 1048576)
+    throw new Error('Tổng hình/file đang ' + (total / 1048576).toFixed(1) + 'MB, vui lòng bớt xuống dưới ' + MAX_TOTAL_MB + 'MB.');
   const items = [];
   for (const r of rows) {
     const files = [];
-    for (const p of r.pics) files.push({ name: p.file.name, mimeType: p.file.type, data: await toB64(p.file) });
+    for (const p of r.pics) files.push({ name: p.file.name, mimeType: p.file.type || 'application/octet-stream', data: await toB64(p.file) });
     items.push({ brand: r.brand, partNo: r.partNo, desc: r.desc, qty: r.qty || '1', files });
   }
   return items;
@@ -472,16 +498,16 @@ async function unlock() {
 }
 function initAdmin() {
   document.body.classList.add('admin');
-  document.title = 'Nhập hộ RFQ | Fast Group Engineering';
+  document.title = 'Nhập hộ RFQ | Fast Group';
   document.querySelector('.head small').textContent = 'Chế độ nhập hộ · Mr. Đức';
   document.querySelector('.head .time').textContent = '🔧 Không cần mã email';
-  document.querySelector('.sec span').textContent = 'tối đa ' + ADMIN_MAX_ITEMS + ' mã, mỗi mã 3 hình';
+  document.querySelector('.sec span').firstChild.textContent = 'tối đa ' + ADMIN_MAX_ITEMS + ' mã, mỗi mã 3 hình/file';
   $('memo').textContent = 'Chỉ bắt buộc Tên công ty + mã hàng. Họ tên, SĐT, email, MST có thì nhập, không có để trống.';
   $('memo').style.display = 'block';
   $('submit').textContent = 'Lưu RFQ';
   $('src').value = ref || 'zalo';
   document.querySelector('#done h2').textContent = 'Đã lưu vào bảng RFQ';
-  document.querySelector('#done .dsub').textContent = 'Hình (nếu có) đã lên Drive.';
+  document.querySelector('#done .dsub').textContent = 'Hình / file (nếu có) đã lên Drive.';
   document.querySelector('#done .dnote').style.display = 'none';
   document.querySelector('#done .dcontact').style.display = 'none';
   $('again').onclick = () => location.reload();
