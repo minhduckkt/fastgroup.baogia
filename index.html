@@ -213,8 +213,18 @@
 <script>
 /* ===== CẤU HÌNH ===== */
 const API_URL = 'https://script.google.com/macros/s/AKfycbw7re27S93UEOSWlLqJHOKzGSKJ8sK3ELOVxeNULKLLkmNG9GeeHRFcgCZpU1shVZbnMQ/exec';
-const BRANDS = ['Crouzet', 'GESTRA', 'GF Piping Systems', 'Hansford Sensors', 'Herion', 'KACON', 'Markal',
-                'Norgren', 'Plastigauge', 'Qlight', 'Rheintacho', 'Tempil', 'W.E.St.', 'Khác'];
+// Hãng theo nhóm, giống trang fastgroup.vn/brands.html. Thêm hãng: thêm tên vào đúng nhóm. "Khác" luôn ở cuối.
+const BRAND_GROUPS = [
+  ['Đo lường & Kiểm tra NDT', ['Diffu-Therm', 'Hansford Sensors', 'Magnaflux', 'Plastigauge', 'SONOTEC', 'WIKA']],
+  ['Van & Kiểm soát lưu chất', ['ASCO', 'Balon Valve', 'Fisher', 'Flygt', 'GESTRA', 'GF Piping Systems',
+                                'Honeywell', 'Rotork', 'TESCOM']],
+  ['Tự động hóa & Khí nén – Thủy lực', ['AirTAC', 'Bosch Rexroth', 'Crouzet', 'Festo', 'Herion', 'HYDAC', 'KACON',
+                                        'Norgren', 'Rheintacho', 'SMC', 'W.E.St.']],
+  ['Điện & Đo lường quá trình', ['ABB', 'Eaton', 'Emerson', 'Endress+Hauser', 'Rosemount', 'Schneider Electric', 'Siemens']],
+  ['Tín hiệu, Bảo trì & Làm kín', ['Flexitallic', 'Frenzelit', 'Garlock', 'LA-CO', 'Lamons', 'Markal', 'Qlight',
+                                    'Sonel', 'SpotSee', 'Teadit', 'Tempil']]
+];
+const OTHER_BRAND = 'Khác';
 const MAX_ITEMS = 5, PICS_PER_ITEM = 3, START_ROWS = 3, IMG_MAX_PX = 1800;
 const MAX_FILE_MB = 5, MAX_TOTAL_MB = 20;          // mỗi file ≤ 5MB, cả RFQ ≤ 20MB
 // File ngoài hình được nhận (đuôi -> nhãn hiện trên ô). Thêm đuôi ở đây thì nhớ thêm cả trong Code.gs (FILE_TYPES)
@@ -298,13 +308,18 @@ function addRow() {
   el.innerHTML =
     '<span class="no"></span>' +
     '<select class="b" data-k="brand" required aria-label="Hãng"><option value="" disabled selected hidden>Chọn hãng</option>' +
-      BRANDS.map(b => '<option>' + esc(b) + '</option>').join('') + '</select>' +
+      BRAND_GROUPS.map(([g, list]) => '<optgroup label="' + esc(g) + '">' +
+        list.map(b => '<option>' + esc(b) + '</option>').join('') + '</optgroup>').join('') +
+      '<option value="' + OTHER_BRAND + '">Khác (ghi ở Mô tả)</option></select>' +
     '<input class="p" data-k="partNo" placeholder="Mã hàng" aria-label="Mã hàng">' +
     '<input class="d" data-k="desc" placeholder="Mô tả thêm" aria-label="Mô tả thêm">' +
     '<input class="qty" data-k="qty" inputmode="decimal" placeholder="1" aria-label="Số lượng">' +
     '<div class="pics"><label class="cam" title="Thêm hình hoặc file Word, Excel, PDF, CAD (tối đa 3, mỗi file dưới 5MB)">' + CAM +
       '<input type="file" accept="' + ACCEPT + '" multiple hidden></label></div>' +
     '<button type="button" class="del" title="Xóa dòng" aria-label="Xóa dòng">×</button>';
+  el.querySelector('select').onchange = e => {
+    el.querySelector('.d').placeholder = e.target.value === OTHER_BRAND ? 'Ghi tên hãng + mô tả' : 'Mô tả thêm';
+  };
   el.querySelector('input[type=file]').onchange = async e => {
     const bad = [];
     $('err').textContent = '';
@@ -455,10 +470,6 @@ function loadContact() {
   if (d.m) lookup();
 }
 
-<<<<<<< HEAD
-for (let i = 0; i < START_ROWS; i++) addRow();
-loadContact();
-=======
 /* ---- CHẾ ĐỘ NHẬP HỘ (Mr. Đức) – link .../?admin ---- */
 async function adminSave() {
   const name = $('name').value.trim(), phone = $('phone').value.trim(), email = $('email').value.trim(), d = mstDigits();
@@ -524,7 +535,6 @@ function initAdmin() {
 
 for (let i = 0; i < START_ROWS; i++) addRow();
 if (ADMIN) initAdmin(); else loadContact();
->>>>>>> 1784b69c5f33c4e58a8f6107d4f4f0432d3ab902
 </script>
 </body>
 </html>
